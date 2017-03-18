@@ -1,7 +1,7 @@
 package wifisurveyor;
 
 import wifisurveyor.gui.StartingForm;
-import wifisurveyor.gui.UI;
+//import wifisurveyor.gui.UI;
 
 import javax.swing.*;
 
