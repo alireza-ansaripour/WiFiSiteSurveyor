@@ -30,6 +30,7 @@ public class DirectDbSiteSurveyor implements WifiSiteSurveyor
     private String currentFloorPlan = null;
     private String currentSurveyName = null;
     private DBManager manager = null;
+    private String username = "ali";
 /*
     public DirectDbSiteSurveyor(String user, String password)
     {
@@ -92,9 +93,9 @@ public class DirectDbSiteSurveyor implements WifiSiteSurveyor
     }
 
     @Override
-    public Point2D[] getCurrentPoints()
-    {
-        return new Point2D[] {new Point2D.Float(0.25f,0.4f)};
+    public Point2D[] getCurrentPoints() throws SQLException {
+//        return new Point2D[] {new Point2D.Float(0.25f,0.4f)};
+        return manager.getPoints(this.currentFloorPlan, this.username, this.currentSurveyName);
     }
 
     @Override
@@ -108,7 +109,7 @@ public class DirectDbSiteSurveyor implements WifiSiteSurveyor
         String strDate = sdfDate.format(now);
         for (AP ap : aps) {
             System.out.println((float)i/aps.size() );
-            manager.insert(currentLocation,strDate, this.currentFloorPlan, "ali", currentSurveyName, ap.mac,Integer.parseInt(ap.channel.trim()),ap.ssid, "-10");
+            manager.insert(currentLocation,strDate, this.currentFloorPlan, this.username, currentSurveyName, ap.mac,Integer.parseInt(ap.channel.trim()),ap.ssid, "-10");
             i++;
         }
     }

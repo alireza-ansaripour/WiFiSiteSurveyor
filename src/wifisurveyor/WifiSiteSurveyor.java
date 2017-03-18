@@ -2,6 +2,7 @@ package wifisurveyor;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.sql.SQLException;
 
 /**
  * Created by Behrouz on 14/03/2017.
@@ -16,7 +17,7 @@ public interface WifiSiteSurveyor
 
     public String[] getSurveyNames();
 
-    public Point2D[] getCurrentPoints();
+    public Point2D[] getCurrentPoints() throws SQLException;
 
     public void scan(Point2D currentLocation) throws Exception;
 
