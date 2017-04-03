@@ -11,6 +11,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 /**
@@ -39,8 +40,7 @@ public class StartingForm
         dialog.setVisible(true);
     }
 
-    private void createUIComponents()
-    {
+    private void createUIComponents() throws SQLException {
         planComboBox = new JComboBox(Manager.getSurveyor().getFloorPlanNames());
         surveyNameComboBox = new JComboBox(Manager.getSurveyor().getSurveyNames());
         planComboBox.setPrototypeDisplayValue("aaaaaaaaaaaaaaaaa");

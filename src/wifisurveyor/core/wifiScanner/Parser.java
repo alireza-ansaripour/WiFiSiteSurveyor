@@ -39,10 +39,13 @@ public class Parser {
         String mac = firstLine.substring(firstLine.indexOf(":")+2);
         String secondLine = scanner.nextLine();
         String power = secondLine.substring(secondLine.indexOf(":")+2);
+        power = power.replace("%", "");
         scanner.nextLine();
         String forthLine = scanner.nextLine();
         String channel = forthLine.substring(forthLine.indexOf(":") + 2);
-        this.APs.add(new AP(name, channel, mac, power));
+        float p = Float.parseFloat(power);
+        p /=2;
+        this.APs.add(new AP(name, channel, mac, p - (float)100));
     }
 
     public ArrayList<AP> getAPs(){

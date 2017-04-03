@@ -57,8 +57,11 @@ public class DBManager {
      * @param username
      * @param survey_name
      */
-    public void delete(Point coordinate, String plan, String username, String survey_name){
-        //TODO : implement this method
+    public void delete(Point2D coordinate, String plan, String username, String survey_name) throws SQLException {
+        String query = String .format("delete FROM survey_data WHERE coordinate <-> point(%f,%f) <= 0.01 and floor_plan = '%s' and survey_name='%s' and user_name='%s';", coordinate.getX(), coordinate.getY(), plan, survey_name, username);
+        System.out.println(query);
+        stmt.execute(query);
+        c.commit();
     }
     public Point2D[] getPoints(String floor_plan,String username, String survey_name) throws SQLException {
 
@@ -67,7 +70,6 @@ public class DBManager {
         ArrayList<Point2D> point2DS = new ArrayList<>();
         while (resultSet.next()){
             String tmp = resultSet.getString(1);
-            System.out.println(tmp);
             String pointString = tmp.substring(1, tmp.length()-1);
             String[] parts = pointString.split(",");
             Point2D p = new Point2D.Float(Float.parseFloat(parts[0]), Float.parseFloat(parts[1]));
@@ -79,13 +81,32 @@ public class DBManager {
                     point2DS.add(p);
             }
         }
-        System.out.println(point2DS.get(0).getX() == point2DS.get(1).getX());
         return point2DS.toArray(new Point2D[point2DS.size()]);
     }
-    public Object[] getPointData(Point coordinate, String plan, String username, String survey_name){
+    public String[] getUserProjects(String userName) throws SQLException {
+        String query = String .format("select DISTINCT survey_name from survey_data WHERE user_name='%s';", userName);
+        ResultSet resultSet = stmt.executeQuery(query);
+        ArrayList<String> projects = new ArrayList<>();
+        while (resultSet.next()){
+            String record = resultSet.getString(1);
+            projects.add(record);
+        }
+        return projects.toArray(new String[projects.size()]);
 
-        //TODO : implement this method
-        return  null;
+    }
+    public String[][] getPointData(Point2D coordinate, String plan, String username, String survey_name) throws SQLException {
+
+        String query = String .format("SELECT mac,channel,ssid,readings FROM survey_data WHERE coordinate <-> point(%f,%f) <= 0.01 and floor_plan = '%s' and survey_name='%s' and user_name='%s';", coordinate.getX(), coordinate.getY(), plan, survey_name, username);
+        ResultSet resultSet = stmt.executeQuery(query);
+        ArrayList<String[]> data = new ArrayList<>();
+        while (resultSet.next()){
+            String mac = resultSet.getString(1);
+            String channel = resultSet.getString(2);
+            String ssid = resultSet.getString(3);
+            String reading = resultSet.getString(4);
+            data.add(new String[]{mac,channel,ssid,reading});
+        }
+        return data.toArray(new String[data.size()][]);
     }
 
 }

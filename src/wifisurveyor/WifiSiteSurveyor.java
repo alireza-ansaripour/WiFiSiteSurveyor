@@ -15,13 +15,13 @@ public interface WifiSiteSurveyor
 
     public String[] getFloorPlanNames();
 
-    public String[] getSurveyNames();
+    public String[] getSurveyNames() throws SQLException;
 
     public Point2D[] getCurrentPoints() throws SQLException;
 
     public void scan(Point2D currentLocation) throws Exception;
 
-    public void remove(Point2D location);
+    public void remove(Point2D location) throws SQLException;
 
-    public PlainTextTable getData(Point2D location);
+    public PlainTextTable getData(Point2D location) throws SQLException;
 }

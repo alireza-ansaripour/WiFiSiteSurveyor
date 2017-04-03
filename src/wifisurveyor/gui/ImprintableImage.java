@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import static javax.swing.SwingUtilities.*;
@@ -20,9 +21,9 @@ public class ImprintableImage extends JComponent implements MouseListener
 
         boolean addPoint(Point2D p);
 
-        boolean removePoint(Point2D p);
+        boolean removePoint(Point2D p) throws SQLException;
 
-        boolean selectPoint(Point2D p);
+        boolean selectPoint(Point2D p) throws SQLException;
     }
 
     public static class Configuration
@@ -155,10 +156,14 @@ public class ImprintableImage extends JComponent implements MouseListener
                     selected.setIcon(config.pointRemovingIcon);
                     new Thread(() ->
                     {
-                        if (handler.removePoint(p.normalizedPoint))
-                            markedPoints.remove(index);
-                        else
-                            selected.setIcon(config.pointAddedIcon);
+                        try {
+                            if (handler.removePoint(p.normalizedPoint))
+                                markedPoints.remove(index);
+                            else
+                                selected.setIcon(config.pointAddedIcon);
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        }
                         isReady = true;
                     }).start();
                 }
@@ -167,7 +172,11 @@ public class ImprintableImage extends JComponent implements MouseListener
                     selected.setIcon(config.pointSelectedIcon);
                     new Thread(() ->
                     {
-                        handler.selectPoint(p.normalizedPoint);
+                        try {
+                            handler.selectPoint(p.normalizedPoint);
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        }
                         selected.setIcon(config.pointAddedIcon);
                         isReady = true;
                     }).start();
