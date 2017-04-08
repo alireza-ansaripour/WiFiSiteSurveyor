@@ -45,7 +45,7 @@ public class DBManager {
      * @throws SQLException
      */
     public void insert(Point2D coordinate, String log_time, String  plan, String  user_name, String survey_name, String mac, int channel, String ssid, String  signalPower) throws SQLException {
-        String query = String.format("INSERT INTO survey_data (coordinate, log_time, floor_plan, user_name, survey_name, mac, channel, ssid, readings) VALUES (%s, '%s', '%s', '%s', '%s', macaddr('%s'), %d, '%s', '{%s}');","point(" + coordinate.getX() + "," + coordinate.getY() + ")", log_time, plan, user_name, survey_name, mac, channel, ssid, signalPower);
+        String query = String.format("INSERT INTO survey_data (coordinate, log_time, floor_plan, user_name, survey_name, mac, channel, ssid, readings) VALUES (%s, '%s', '%s', '%s', '%s', macaddr('%s'), %d, '%s', '{%s}');","point(" + coordinate.getX() + "," + coordinate.getY() + ")", log_time, plan, user_name, survey_name, mac, channel, ssid.replace("'",""), signalPower);
         stmt.execute(query);
         c.commit();
     }
@@ -96,7 +96,7 @@ public class DBManager {
     }
     public String[][] getPointData(Point2D coordinate, String plan, String username, String survey_name) throws SQLException {
 
-        String query = String .format("SELECT mac,channel,ssid,readings FROM survey_data WHERE coordinate <-> point(%f,%f) <= 0.01 and floor_plan = '%s' and survey_name='%s' and user_name='%s';", coordinate.getX(), coordinate.getY(), plan, survey_name, username);
+        String query = String .format("SELECT mac,channel,ssid,avg(readings[1]) as signal_power FROM survey_data WHERE coordinate <-> point(%f,%f) <= 0.01 and floor_plan = '%s' and survey_name='%s' and user_name='%s' GROUP BY mac,user_name,survey_name,floor_plan, ssid, channel ORDER BY signal_power DESC;", coordinate.getX(), coordinate.getY(), plan, survey_name, username);
         ResultSet resultSet = stmt.executeQuery(query);
         ArrayList<String[]> data = new ArrayList<>();
         while (resultSet.next()){

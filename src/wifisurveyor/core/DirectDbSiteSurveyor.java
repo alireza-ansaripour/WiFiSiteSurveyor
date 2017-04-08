@@ -68,17 +68,6 @@ public class DirectDbSiteSurveyor implements WifiSiteSurveyor
         return temp;
     }
 
-    private void delay()
-    {
-        try
-        {
-            Thread.sleep(4000);
-        } catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public String[] getFloorPlanNames()
     {
@@ -97,22 +86,24 @@ public class DirectDbSiteSurveyor implements WifiSiteSurveyor
 
     @Override
     public void scan(Point2D currentLocation) throws SQLException {
-        Manager.getUI().reportStatus("Start Scanning ...");
-        String commandOutput = Command.mock();
-        Parser parser = new Parser(commandOutput);
-        ArrayList<AP> aps = parser.getAPs();
-        int i = 0;
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//dd/MM/yyyy
-        Date now = new Date();
-        String strDate = sdfDate.format(now);
-        Manager.getUI().reportStatus("Sending data to DataBase");
-        for (AP ap : aps) {
-            float compeleted = (float)i/aps.size();
-            Manager.getUI().reportStatus("compeleted: " + compeleted);
-            manager.insert(currentLocation,strDate, this.currentFloorPlan, this.username, currentSurveyName, ap.mac,Integer.parseInt(ap.channel.trim()),ap.ssid, Float.toString(ap.power));
-            i++;
+        for (int k = 1; k <= 3; k++) {
+            Manager.getUI().reportStatus("Start Scan " + k);
+            String commandOutput = Command.mock();
+            Parser parser = new Parser(commandOutput);
+            ArrayList<AP> aps = parser.getAPs();
+            int i = 0;
+            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//dd/MM/yyyy
+            Date now = new Date();
+            String strDate = sdfDate.format(now);
+            Manager.getUI().reportStatus("Sending data to DataBase");
+            for (AP ap : aps) {
+                float compeleted = (float)i/aps.size();
+                Manager.getUI().reportStatus("compeleted: " + compeleted);
+                manager.insert(currentLocation,strDate, this.currentFloorPlan, this.username, currentSurveyName, ap.mac,Integer.parseInt(ap.channel.trim()),ap.ssid, Float.toString(ap.power));
+                i++;
+            }
+            Manager.getUI().reportStatus("Scan finished ...");
         }
-        Manager.getUI().reportStatus("Scan finished ...");
 
     }
 
@@ -129,8 +120,6 @@ public class DirectDbSiteSurveyor implements WifiSiteSurveyor
         System.out.println(location.getX() + "-" + location.getY());
         Manager.getUI().reportStatus("reading point data...");
         String[][] data = manager.getPointData(location, this.currentFloorPlan, this.username, this.currentSurveyName);
-        System.out.println(data.length);
-        System.out.println(data[0].length);
         String[] columns = {"mac", "channel", "ssid" , "readings"};
         Manager.getUI().reportStatus("data fetched.");
         return new PlainTextTable(columns, data);
