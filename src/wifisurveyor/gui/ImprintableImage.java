@@ -7,6 +7,8 @@ import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static javax.swing.SwingUtilities.*;
 
@@ -30,8 +32,8 @@ public class ImprintableImage extends JComponent implements MouseListener
     {
         private final double distancePrecision = 0.015;
         private final ImageIcon pointAddedIcon = new ImageIcon(getClass().getResource("resources/icons/checked.png"));
-        private final ImageIcon pointSavingIcon  = new ImageIcon(getClass().getResource("resources/icons/green.gif"));
-        private final ImageIcon pointRemovingIcon  = new ImageIcon(getClass().getResource("resources/icons/red.gif"));
+        private final ImageIcon pointSavingIcon  = new ImageIcon(getClass().getResource("resources/icons/ripple.gif"));
+        private final ImageIcon pointRemovingIcon  = new ImageIcon(getClass().getResource("resources/icons/default.gif"));
         private final ImageIcon pointSelectedIcon  = new ImageIcon(getClass().getResource("resources/icons/magnify.gif"));
     }
 
@@ -93,7 +95,7 @@ public class ImprintableImage extends JComponent implements MouseListener
     private Configuration config;
     private Handler handler;
     private Image backgroundImage;
-    private ArrayList<ImprintableImage.Point> markedPoints = new ArrayList<>();
+    private List<ImprintableImage.Point> markedPoints = Collections.synchronizedList(new ArrayList<>());
     private boolean isReady = true;
 
     public ImprintableImage(Configuration config, Handler handler, Image backgroundImage, Point2D[] initialPoints)
