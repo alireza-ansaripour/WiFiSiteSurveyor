@@ -12,6 +12,7 @@ public class PlainTextTable
         this.tableColumn = tableColumn;
         this.tableData = tableData;
     }
+    //as;ldfkjas;lf
     public PlainTextTable(){
         this.tableColumn = new String[0];
         this.tableData = new String[0][0];
