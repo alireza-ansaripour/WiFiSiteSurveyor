@@ -11,7 +11,9 @@ public class Manager
     private static WifiSiteSurveyor wifiSiteSurveyorInstance = new DirectDbSiteSurveyor();
 
     private static UI uiInstance = new GUI();
-
+//kjfg';lsdkf';glksd'f;g
+//        ;lasd';flaskf
+//    asdf
     public static WifiSiteSurveyor getSurveyor()
     {
         return wifiSiteSurveyorInstance;
